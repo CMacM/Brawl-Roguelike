@@ -1,8 +1,19 @@
 import streamlit as st
+import pickle
+from src.assets import fetch_champion_assets
 from src.data import round_pools
 from src.logic import roll_champions
 
 st.set_page_config(page_title="Brawl Rogue", layout="centered")
+
+# Run fetch_champions on startup to ensure up to date
+@st.cache_resource(show_spinner="Fetching champion icons...")
+def init_champions():
+    fetch_champion_assets()
+init_champions()
+
+# Load champion dict
+champion_dict = pickle.load(open("assets/champions.pickle", "rb"))
 
 # Session state
 if "players" not in st.session_state:
@@ -37,6 +48,9 @@ if len(st.session_state.players) >= 2:
             if result:
                 for p, champ in zip(st.session_state.players, result):
                     st.write(f"**{p}**: {champ}")
+                    # Convert champion name to ID
+                    champ_id = champion_dict[champ]
+                    st.image(f"assets/icons/{champ_id}.png", width=50)
             else:
                 st.warning("Not enough champions in pool!")
     else:
