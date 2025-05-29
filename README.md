@@ -1,9 +1,29 @@
 ### To-Do:
 
-- Pick a good name (Brawlgue?)
 - Add ARAM support
 - Clean up UI
 - More Riki rules
+- Victory screen
+
+## Version 0.1.2
+
+### Chnages
+
+- Added roll animation and sfx
+- More bugfixes
+- Win and Loss buttons only show after rolls
+- Changed default round number to 5
+- Rounds now randomise from start
+- Added checkpoint markers to round labels
+- Peristent checkpoints and rule selections
+- Added page hyperlinks
+- Added configuration clearance
+- Added view custom rules
+
+### Known Issues
+
+- Must click twice to add new checkpoint
+- Round number not reset when configuration is cleared
 
 ## Version 0.1.1
 

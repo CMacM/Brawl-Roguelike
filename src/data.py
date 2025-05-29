@@ -12,8 +12,8 @@ round_pools = {
         "description": "Mages",
         "pool": [
             "Ahri", "Anivia", "Annie", "Aurelion Sol", "Aurora", "Azir", "Brand", "Cassiopeia", "Gragas", "Hwei", "Karma", 
-            "Karthus", "Kassadin", "Kennen", "Leblanc", "Lisandras", "Lux", "Lulu", "Malzahar", "Mel", "Morgana", "Nami",
-            "Neeko", "Nidalee", "Orianna", "Ryze", "Seraphine", "Sona", "Raka", "Syndra", "Taliyah", "TF",
+            "Karthus", "Kassadin", "Kennen", "Leblanc", "Lissandra", "Lux", "Lulu", "Malzahar", "Mel", "Morgana", "Nami",
+            "Neeko", "Nidalee", "Orianna", "Ryze", "Seraphine", "Sona", "Soraka", "Syndra", "Taliyah", "Twisted Fate",
             "Veigar", "Vel'Koz", "Vex", "Viktor", "Vladimir", "Xerath", "Ziggs", "Zilean", "Zoe", "Zyra"
         ]
     },
@@ -59,7 +59,7 @@ round_pools = {
     9: {
         "description": "Big boobs",
         "pool": [
-            "Ahri", "Ashe", "Caitlyn", "Cassiopeia", "Diana", "Elise", "Evelyn", "Gragas", "Janna", "Irelia", "Kai'Sa",
+            "Ahri", "Ashe", "Caitlyn", "Cassiopeia", "Diana", "Elise", "Evelynn", "Gragas", "Janna", "Irelia", "Kai'Sa",
             "Karma", "Katarina", "Akali", "Leblanc", "Lux", "Zyra", "Morgana", "Sivir", "Miss Fortune", "Nidalee", 
             "Leona", "Sona", "Syndra", "Vi", "Renata"
         ]
@@ -71,7 +71,7 @@ round_pools = {
     11: {
         "description": "Champions Ambre likes to play",
         "pool": [
-            "Jinx","Gnar", "Sona", "Twitch", "Yuumi", "Shyv", "Milio", "Lulu", "Seraphine", "Aurelion Sol",
+            "Jinx","Gnar", "Sona", "Twitch", "Yuumi", "Shyvana", "Milio", "Lulu", "Seraphine", "Aurelion Sol",
             "Morgana", "Rammus", "Singed", "Soraka", "Teemo"
         ]
     }

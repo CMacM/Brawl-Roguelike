@@ -1,7 +1,9 @@
 import os
-import re
 import requests
 import pickle
+import base64
+import streamlit as st
+import uuid
 
 def fetch_champion_assets():
     # Request latest version
@@ -45,3 +47,18 @@ def fetch_champion_assets():
     else:
         print("\nFailed to download the following champions:")
         print(failed_champs)
+
+#Function to embed and autoplay sound
+def play_roll_sound():
+    try:
+        audio_file = open('assets/slot_sound_03.wav', 'rb')
+        audio_bytes = audio_file.read()
+        b64 = base64.b64encode(audio_bytes).decode()
+        md = f"""
+        <audio autoplay>
+            <source src="data:audio/wav;base64,{b64}" type="audio/wav">
+        </audio>
+        """
+        st.markdown(md, unsafe_allow_html=True)
+    except FileNotFoundError:
+        pass  # fallback silently if sound file missing

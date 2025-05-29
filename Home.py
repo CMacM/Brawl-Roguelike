@@ -1,9 +1,11 @@
 import streamlit as st
 import pickle
 import random
-from src.assets import fetch_champion_assets
+import math
+import time
+from src.assets import fetch_champion_assets, play_roll_sound
 from src.data import round_pools
-from src.logic import roll_champions
+from src.util import roll_champions
 
 st.set_page_config(page_title="Brawlatron 3000", layout="centered")
 
@@ -18,12 +20,22 @@ champion_dict = pickle.load(open("assets/champions.pickle", "rb"))
 
 # Extract round pools and options
 available_rounds = list(round_pools.keys())
+max_rounds = len(available_rounds)
 
 # Merge any custom rules into the round_pools list
 custom_rules = st.session_state.get("custom_rules", {})
-combined_round_pools = {**round_pools, **custom_rules}
+custom_rules_cleaned = {}
+for i, key in enumerate(custom_rules.keys()):
+    custom_rules_cleaned[max_rounds + i + 1] = {
+        "description": key,
+        "pool": custom_rules[key]["pool"]
+    }
+combined_round_pools = {**round_pools, **custom_rules_cleaned}
+
+# Update available rounds and options
 available_rounds = list(combined_round_pools.keys())
 round_options = {k: v["description"] for k, v in combined_round_pools.items()}
+max_rounds = len(available_rounds)
 
 # Session state
 if "players" not in st.session_state:
@@ -34,84 +46,165 @@ if "checkpoint" not in st.session_state:
     st.session_state.checkpoint = 0
 if "round_schedule" not in st.session_state:
     st.session_state.round_schedule = []
-if "pre_selected_rounds" not in st.session_state:
-    st.session_state.pre_selected_rounds = []
 if "checkpoint_rounds" not in st.session_state:
     st.session_state.checkpoint_rounds = []
-
-# Title of page
-st.title("Brawlatron 3000 - The Brawl League Game")
-st.markdown("Welcome to Brawlatron 3000! 🎉")
-st.markdown(
-    "This is a game where you and your friends can play a series of rounds with unique rules. "
-    "Each round has its own set of champions to choose from, and you can customize the rules to fit your playstyle. "
-    "Let's get started!"
-)
+if "has_rolled" not in st.session_state:
+    st.session_state.has_rolled = False
+if "round_selections" not in st.session_state:
+    st.session_state.round_selections = {}
+if "num_rounds" not in st.session_state:
+    st.session_state.num_rounds = 5
 
 # Round selection phase
 if not st.session_state.round_schedule:
+    # Title of page
+    st.title("Brawlatron 3000 - The Brawl League Game")
+    st.markdown("Welcome to Brawlatron 3000! 🎉")
+    st.markdown(
+        "This is a game where you and your friends can play a series of rounds with unique rules. "
+        "Each round has its own set of champions to choose from, and you can customize the rules to fit your playstyle. "
+        "Let's get started!"
+    )
+
     st.subheader("🎲 Choose Your Rounds")
 
     # Number of rounds input
-    num_rounds = st.number_input("How many rounds?", min_value=1, max_value=20, value=10)
+    max_rounds = len(available_rounds)
+
+    num_rounds = st.number_input(
+        "How many rounds?", min_value=1, max_value=max_rounds, value=st.session_state.num_rounds, step=1
+    )
 
     # Pre-selected rounds
     if num_rounds > len(available_rounds):
         st.warning("Not enough unique rules to fill all rounds!")
         st.stop()
 
+    st.session_state.pre_selected_rounds = random.sample(available_rounds, k=max_rounds)
+
     # Round rule selection interface
     manual_config = []
     cols = st.columns(2)
 
+     # Right column: randomize + checkpoints
+    with cols[1]:
+        if st.button("🎰 Randomize All"):
+            st.session_state.round_selections = {}
+            st.session_state.pre_selected_rounds = random.sample(available_rounds, k=max_rounds)
+            st.rerun()
+
+        # Define all valid options
+        checkpoint_options = list(range(1, num_rounds + 1))
+
+        # Filter out checkpoints that are now out of range
+        st.session_state.checkpoint_rounds = [
+            r for r in st.session_state.checkpoint_rounds if r in checkpoint_options
+        ]
+
+        # Let user modify persistent list
+        checkpoint_selection = st.multiselect(
+            "📍 Select checkpoint rounds",
+            options=checkpoint_options,
+            default=st.session_state.checkpoint_rounds,
+        )
+
+        # Store back
+        st.session_state.checkpoint_rounds = checkpoint_selection
+
+        st.markdown("Don't see the rule you want?")
+        st.page_link("pages/1_Add Custom Rules.py", label="Create Custom Rule", icon="🛠️")
+
+        # Add vertical space
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        if st.button("🗑️ Clear Configuration"):
+            for key in st.session_state.keys():
+                del st.session_state[key]
+            st.rerun()
+        
+        if st.button("📖 View Custom Rules"):
+            # Print custom rules in a text area outside the colums
+            if "custom_rules" in st.session_state and st.session_state.custom_rules:
+                for value in st.session_state.custom_rules.values():
+                    st.markdown(f"### {value['description']}")
+                    st.markdown("**Champions:** " + ", ".join(value["pool"]))
+            else:
+                st.markdown("No custom rules defined yet. Create some on the custom rules page!")
+
     # Left column: round rule pickers
     with cols[0]:
         for i in range(num_rounds):
-            # Use saved selection if it exists; fallback to first option
-            default = (
+            is_checkpoint = (i + 1) in st.session_state.checkpoint_rounds
+            label = f"Round {i + 1}"
+            if is_checkpoint:
+                label += " 🚩 Checkpoint"
+
+            default_rule = (
                 st.session_state.pre_selected_rounds[i]
                 if i < len(st.session_state.pre_selected_rounds)
                 else available_rounds[0]
             )
+
+            # Get current selection from session state or use default
+            current_selection = st.session_state.round_selections.get(i, default_rule)
+
+            # Render selectbox with current selection as default
             rule = st.selectbox(
-                f"Round {i + 1}",
+                label,
                 options=available_rounds,
                 format_func=lambda k: round_options[k],
-                index=available_rounds.index(default),
+                index=available_rounds.index(current_selection),
                 key=f"round_select_{i}"
             )
+
+            # Store in session state
+            st.session_state.round_selections[i] = rule
             manual_config.append(rule)
 
-    # Right column: randomize + checkpoints
-    with cols[1]:
-        if st.button("🎰 Randomize All"):
-            st.session_state.pre_selected_rounds = random.sample(available_rounds, k=num_rounds)
+        if st.button("🚀 Start Game"):
+            st.session_state.round_schedule = [
+                st.session_state.round_selections[i] for i in range(num_rounds)
+            ]
+            st.session_state.round_number = 1
+            st.session_state.checkpoint = 0
             st.rerun()
-
-        st.session_state.checkpoint_rounds = st.multiselect(
-            "📍 Select checkpoint rounds",
-            options=list(range(1, num_rounds + 1)),
-            default=[5, 10] if num_rounds >= 10 else [num_rounds],
-        )
-
-        st.markdown("Don't see the rule you want?")
-        st.markdown("Add your own on the custom rules page!")
-
-    if st.button("🚀 Start Game"):
-        st.session_state.round_schedule = manual_config
+else:
+    if st.button("🔁 Restart Game"):
+        st.session_state.round_schedule = []
         st.session_state.round_number = 1
         st.session_state.checkpoint = 0
+        st.session_state.has_rolled = False
         st.rerun()
-else:
+
+    # Title of page
+    st.title("Brawlatron 3000 - The Brawl League Game")
+    st.markdown("Welcome to Brawlatron 3000! 🎉")
+    st.markdown(
+        "This is a game where you and your friends can play a series of rounds with unique rules. "
+        "Each round has its own set of champions to choose from, and you can customize the rules to fit your playstyle. "
+        "Let's get started!"
+    )
+
+    num_rounds = len(st.session_state.round_schedule)
     # Player entry
     with st.expander("🎮 Add Players"):
-        num_players = st.number_input("Number of players", min_value=2, max_value=10, step=1)
+        max_players = 6
+        num_players = st.number_input("Number of players", min_value=2, max_value=max_players, step=1)
+        # Prevent adding more than `num_players` unique entries
+        new_players = []
         for i in range(num_players):
             name = st.text_input(f"Player {i+1} name", key=f"player_{i}")
-            if name and name not in st.session_state.players:
-                st.session_state.players.append(name)
-        if len(st.session_state.players) == num_players:
-            st.success("All players entered!")
+            if name:
+                new_players.append(name)
+
+        # Remove duplicates and limit total
+        unique_players = list(dict.fromkeys(new_players))  # dedupe, preserve order
+        if len(unique_players) > max_players:
+            st.warning(f"Maximum {max_players} players allowed.")
+        else:
+            st.session_state.players = unique_players
+            if len(unique_players) == num_players:
+                st.success("All players entered!")
 
     # Main game logic
     if len(st.session_state.players) >= 2 and st.session_state.round_schedule:
@@ -131,38 +224,55 @@ else:
             if pool:
                 if st.button("🎲 Roll Champions"):
                     result = roll_champions(st.session_state.players, pool)
-                    if result:
-                        for p, champ in zip(st.session_state.players, result):
-                            st.write(f"**{p}**: {champ}")
+                    play_roll_sound()
+
+                    columns = st.columns(3)
+                    grouped = [[], [], []]
+                    for idx, player in enumerate(st.session_state.players):
+                        grouped[idx % 3].append((idx, player))
+
+                    # Create placeholders once with name + image slots
+                    player_placeholders = [None] * len(st.session_state.players)
+                    for col_idx, group in enumerate(grouped):
+                        with columns[col_idx]:
+                            for idx, player in group:
+                                st.markdown(f"**{player}**", unsafe_allow_html=True)
+                                player_placeholders[idx] = st.empty()
+
+                    # Animated rolling
+                    for t in range(15):
+                        delay = 0.03 + (t / 15) * 0.2
+                        for idx, player in enumerate(st.session_state.players):
+                            champ = random.choice(pool)
                             champ_id = champion_dict.get(champ, champ)
-                            st.image(f"assets/icons/{champ_id}.png", width=50)
-                    else:
-                        st.warning("Not enough champions in pool!")
+                            player_placeholders[idx].image(f"assets/icons/{champ_id}.png", width=100)
+                        time.sleep(delay)
+
+                    # Final result
+                    for idx, (player, champ) in enumerate(zip(st.session_state.players, result)):
+                        champ_id = champion_dict.get(champ, champ)
+                        player_placeholders[idx].image(f"assets/icons/{champ_id}.png", width=100)
+
+                    st.session_state.has_rolled = True
             else:
                 st.info("Choose your own champions for this round!")
+                st.session_state.has_rolled = True
 
-            # Controls
-            col1, col2 = st.columns(2)
-            if col1.button("✅ Win (Next Round)"):
-                if st.session_state.round_number in st.session_state.checkpoint_rounds:
-                    st.session_state.checkpoint = st.session_state.round_number
-                st.session_state.round_number += 1
-                st.rerun()
+    if st.session_state.has_rolled:
+        col1, col2 = st.columns(2)
+        if col1.button("✅ Win (Next Round)"):
+            if st.session_state.round_number in st.session_state.checkpoint_rounds:
+                st.session_state.checkpoint = st.session_state.round_number
+            st.session_state.round_number += 1
+            st.session_state.has_rolled = False
+            st.rerun()
 
-            if col2.button("❌ Loss (Back to Checkpoint)"):
-                st.session_state.round_number = (
-                    st.session_state.checkpoint + 1 if st.session_state.checkpoint > 0 else 1
-                )
-                st.rerun()
+        if col2.button("❌ Loss (Back to Checkpoint)"):
+            st.session_state.round_number = (
+                st.session_state.checkpoint + 1 if st.session_state.checkpoint > 0 else 1
+            )
+            st.session_state.has_rolled = False
+            st.rerun()
 
-    # Always show restart button
     st.markdown("---")
-    if st.button("🔁 Restart Game"):
-        st.session_state.round_schedule = []
-        st.session_state.round_number = 1
-        st.session_state.checkpoint = 0
-        st.session_state.players = []
-        st.session_state.pre_selected_rounds = []
-        st.rerun()
-
 

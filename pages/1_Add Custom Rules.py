@@ -1,15 +1,17 @@
 import streamlit as st
 import pickle
+from time import sleep
 
 # Load champion dict (name → image filename)
 champion_dict = pickle.load(open("assets/champions.pickle", "rb"))
 champion_names = list(champion_dict.keys())
 
+st.page_link("Home.py", label="Back to Home", icon="🏠")
+
 st.title("🛠️ Create Custom Rule")
 
 # Form inputs
-rule_name = st.text_input("Rule Name", key="custom_rule_name")
-rule_description = st.text_area("Rule Description", key="custom_rule_desc")
+rule_description = st.text_area("Rule Name", key="custom_rule_desc")
 
 selected = set()
 
@@ -24,29 +26,45 @@ with st.expander("🧙 Select Champions for this Pool"):
             if st.checkbox("", key=f"champ_{champ}"):
                 selected.add(champ)
 
-# Save custom rule
-if st.button("💾 Save Rule"):
-    if not rule_name or not rule_description or not selected:
-        st.warning("Please complete all fields and select at least one champion.")
-    else:
-        if "custom_rules" not in st.session_state:
-            st.session_state.custom_rules = {}
-        st.session_state.custom_rules[rule_name] = {
-            "description": rule_description,
-            "pool": list(selected)
-        }
-        st.success(f"Custom rule '{rule_name}' saved!")
+cols = st.columns(3)
+with cols[0]:
+    # Save custom rule
+    if st.button("💾 Save Rule"):
+        if not rule_description or not selected:
+            st.warning("Please complete all fields and select at least one champion.")
+        else:
+            if "custom_rules" not in st.session_state:
+                st.session_state.custom_rules = {}
+            st.session_state.custom_rules[rule_description] = {
+                "description": rule_description,
+                "pool": list(selected)
+            }
+            st.success(f"Custom rule '{rule_description}' saved!")
+            sleep(1)  # Delay to show success message
 
-        # Clear inputs safely
-        if "custom_rule_name" in st.session_state:
-            del st.session_state["custom_rule_name"]
-        if "custom_rule_desc" in st.session_state:
-            del st.session_state["custom_rule_desc"]
-        for champ in champion_names:
-            key = f"champ_{champ}"
-            if key in st.session_state:
-                del st.session_state[key]
+            # Clear inputs safely
+            if "custom_rule_desc" in st.session_state:
+                del st.session_state["custom_rule_desc"]
+            for champ in champion_names:
+                key = f"champ_{champ}"
+                if key in st.session_state:
+                    del st.session_state[key]
+            st.rerun()
 
+with cols[2]:
+    # Clear custom rules
+    if st.button("🗑️ Clear Custom Rules"):
+        st.session_state.round_selections = {}
+        st.session_state.round_schedule = []
+        st.session_state.checkpoint_rounds = []
+        st.session_state.has_rolled = False
+        st.session_state.round_number = 1
+        st.session_state.checkpoint = 0
+        if "custom_rules" in st.session_state:
+            del st.session_state["custom_rules"]
+            st.success("All custom rules cleared!")
+        else:
+            st.warning("No custom rules to clear.")
+            sleep(1)
         st.rerun()
-
-
+    st.markdown("This will reset the game and clear all selections, so be careful!")
