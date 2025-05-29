@@ -32,7 +32,7 @@ round_pools = {
         ]
     },
     5: {
-        "description": "Build what enemy builds – CHECKPOINT (choose your own champ)",
+        "description": "Build what enemy builds (choose your own champ)",
         "pool": []  # Custom pick – handled differently in code
     },
     6: {
@@ -46,7 +46,7 @@ round_pools = {
     7: {
         "description": "Champions beginning with N",
         "pool": [
-            "Nafiri", "Nami", "Nasus", "Naut", "Neeko", "Nidalee", "Nilah", "Nocturne", "Nunu & Willump"
+            "Nafiri", "Nami", "Nasus", "Nautilus", "Neeko", "Nidalee", "Nilah", "Nocturne", "Nunu & Willump"
         ]
     },
     8: {
@@ -65,7 +65,7 @@ round_pools = {
         ]
     },
     10: {
-        "description": "Fully zoomed in – CHECKPOINT (choose your own champ)",
+        "description": "Fully zoomed in (choose your own champ)",
         "pool": []  # Custom pick – handled differently in code
     }
 }
