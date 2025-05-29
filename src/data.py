@@ -3,7 +3,7 @@ round_pools = {
     1: {
         "description": "Easy/comfort picks for tanks",
         "pool": [
-            "Alistar", "Amumu", "Blitz", "Braum", "Cho'Gath", "Dr. Mundo", "Ornn", "Galio", "Garen", "K'Sante",
+            "Alistar", "Amumu", "Blitzcrank", "Braum", "Cho'Gath", "Dr. Mundo", "Ornn", "Galio", "Garen", "K'Sante",
             "Leona", "Malphite", "Maokai", "Nautilus", "Poppy", "Rammus", "Rell", "Sejuani", "Shen", "Singed",
             "Sion", "Skarner", "Tahm Kench", "Taric", "Volibear", "Zac"
         ]
@@ -12,7 +12,7 @@ round_pools = {
         "description": "Mages",
         "pool": [
             "Ahri", "Anivia", "Annie", "Aurelion Sol", "Aurora", "Azir", "Brand", "Cassiopeia", "Gragas", "Hwei", "Karma", 
-            "Karthus", "Kassadin", "Kennen", "Leblanc", "Lisandras", "Lux", "Lulu", "Malzahar", "Mel Medarda", "Morgana", "Nami",
+            "Karthus", "Kassadin", "Kennen", "Leblanc", "Lisandras", "Lux", "Lulu", "Malzahar", "Mel", "Morgana", "Nami",
             "Neeko", "Nidalee", "Orianna", "Ryze", "Seraphine", "Sona", "Raka", "Syndra", "Taliyah", "TF",
             "Veigar", "Vel'Koz", "Vex", "Viktor", "Vladimir", "Xerath", "Ziggs", "Zilean", "Zoe", "Zyra"
         ]
@@ -27,7 +27,7 @@ round_pools = {
     4: {
         "description": "Black champs",
         "pool": [
-            "Akshan", "Ambessa Medarda", "Ekko", "Illaoi", "Lucian", "Mel Medarda", "Nidalee", "Samira", "Karma", "Nocturne",
+            "Akshan", "Ambessa", "Ekko", "Illaoi", "Lucian", "Mel", "Nidalee", "Samira", "Karma", "Nocturne",
             "Nilah", "Kayn", "Qiyana", "Zed", "Warwick", "Kindred"
         ]
     },
@@ -46,7 +46,7 @@ round_pools = {
     7: {
         "description": "Champions beginning with N",
         "pool": [
-            "Nafiri", "Nami", "Nasus", "Nautilus", "Neeko", "Nidalee", "Nilah", "Nocturne", "Nunu & Willump"
+            "Naafiri", "Nami", "Nasus", "Nautilus", "Neeko", "Nidalee", "Nilah", "Nocturne", "Nunu & Willump"
         ]
     },
     8: {
@@ -67,5 +67,12 @@ round_pools = {
     10: {
         "description": "Fully zoomed in (choose your own champ)",
         "pool": []  # Custom pick – handled differently in code
+    },
+    11: {
+        "description": "Champions Ambre likes to play",
+        "pool": [
+            "Jinx","Gnar", "Sona", "Twitch", "Yuumi", "Shyv", "Milio", "Lulu", "Seraphine", "Aurelion Sol",
+            "Morgana", "Rammus", "Singed", "Soraka", "Teemo"
+        ]
     }
 }

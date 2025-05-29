@@ -5,7 +5,7 @@ from src.assets import fetch_champion_assets
 from src.data import round_pools
 from src.logic import roll_champions
 
-st.set_page_config(page_title="Brawl Rogue", layout="centered")
+st.set_page_config(page_title="Brawlatron 3000", layout="centered")
 
 # Run fetch_champions on startup to ensure up to date
 @st.cache_resource(show_spinner="Fetching champion icons...")
@@ -40,14 +40,22 @@ if "checkpoint_rounds" not in st.session_state:
     st.session_state.checkpoint_rounds = []
 
 # Title of page
-st.title("🏆 Brawl Rogue")
+st.title("Brawlatron 3000 - The Brawl League Game")
+st.markdown("Welcome to Brawlatron 3000! 🎉")
+st.markdown(
+    "This is a game where you and your friends can play a series of rounds with unique rules. "
+    "Each round has its own set of champions to choose from, and you can customize the rules to fit your playstyle. "
+    "Let's get started!"
+)
 
 # Round selection phase
 if not st.session_state.round_schedule:
     st.subheader("🎲 Choose Your Rounds")
 
+    # Number of rounds input
     num_rounds = st.number_input("How many rounds?", min_value=1, max_value=20, value=10)
 
+    # Pre-selected rounds
     if num_rounds > len(available_rounds):
         st.warning("Not enough unique rules to fill all rounds!")
         st.stop()
