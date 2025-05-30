@@ -5,7 +5,7 @@ import math
 import time
 from src.assets import fetch_champion_assets, play_roll_sound
 from src.data import round_pools
-from src.util import roll_champions
+from logic.roll_champions import roll_champions
 
 st.set_page_config(page_title="Brawlatron 3000", layout="centered")
 
@@ -17,6 +17,12 @@ init_champions()
 
 # Load champion dict
 champion_dict = pickle.load(open("assets/champions.pickle", "rb"))
+
+# Define loot pool globally near top or with roll_champions
+loot_options = [
+    "🔁 Re-roll", "⏩ Round Skip", "🎯 Champ Pick", "👥 Team Pick",
+    "🔄 Round Swapper", "🎰 Gambletronic", "⏳ Setbackatron"
+]
 
 # Extract round pools and options
 available_rounds = list(round_pools.keys())
@@ -47,13 +53,13 @@ if "checkpoint" not in st.session_state:
 if "round_schedule" not in st.session_state:
     st.session_state.round_schedule = []
 if "checkpoint_rounds" not in st.session_state:
-    st.session_state.checkpoint_rounds = []
+    st.session_state.checkpoint_rounds = [5,10,15,20]  # Default checkpoints
 if "has_rolled" not in st.session_state:
     st.session_state.has_rolled = False
 if "round_selections" not in st.session_state:
     st.session_state.round_selections = {}
-if "num_rounds" not in st.session_state:
-    st.session_state.num_rounds = 5
+if "inventory" not in st.session_state:
+    st.session_state.inventory = []
 
 # Round selection phase
 if not st.session_state.round_schedule:
@@ -70,9 +76,14 @@ if not st.session_state.round_schedule:
 
     # Number of rounds input
     max_rounds = len(available_rounds)
-
+    default = st.session_state.num_rounds if "num_rounds" in st.session_state else 5
     num_rounds = st.number_input(
-        "How many rounds?", min_value=1, max_value=max_rounds, value=st.session_state.num_rounds, step=1
+        "How many rounds?", 
+        min_value=1,
+        max_value=max_rounds,
+        value=default,
+        step=1,
+        key="num_rounds"
     )
 
     # Pre-selected rounds
@@ -93,23 +104,21 @@ if not st.session_state.round_schedule:
             st.session_state.pre_selected_rounds = random.sample(available_rounds, k=max_rounds)
             st.rerun()
 
-        # Define all valid options
         checkpoint_options = list(range(1, num_rounds + 1))
 
-        # Filter out checkpoints that are now out of range
-        st.session_state.checkpoint_rounds = [
-            r for r in st.session_state.checkpoint_rounds if r in checkpoint_options
-        ]
+        # Filter out invalid checkpoint values once
+        if "checkpoint_rounds" in st.session_state:
+            st.session_state.checkpoint_rounds = [
+                cp for cp in st.session_state.checkpoint_rounds if cp in checkpoint_options
+            ]
 
-        # Let user modify persistent list
-        checkpoint_selection = st.multiselect(
+        # Streamlit handles updates
+        st.multiselect(
             "📍 Select checkpoint rounds",
             options=checkpoint_options,
-            default=st.session_state.checkpoint_rounds,
+            default=st.session_state.get("checkpoint_rounds", []),
+            key="checkpoint_selector",
         )
-
-        # Store back
-        st.session_state.checkpoint_rounds = checkpoint_selection
 
         st.markdown("Don't see the rule you want?")
         st.page_link("pages/1_Add Custom Rules.py", label="Create Custom Rule", icon="🛠️")
@@ -120,6 +129,8 @@ if not st.session_state.round_schedule:
         if st.button("🗑️ Clear Configuration"):
             for key in st.session_state.keys():
                 del st.session_state[key]
+            st.session_state.num_rounds = 5
+            st.session_state.checkpoint_rounds = []
             st.rerun()
         
         if st.button("📖 View Custom Rules"):
@@ -162,18 +173,25 @@ if not st.session_state.round_schedule:
             manual_config.append(rule)
 
         if st.button("🚀 Start Game"):
+            st.session_state.checkpoint_rounds = st.session_state.get("checkpoint_selector", [])
             st.session_state.round_schedule = [
                 st.session_state.round_selections[i] for i in range(num_rounds)
             ]
             st.session_state.round_number = 1
             st.session_state.checkpoint = 0
             st.rerun()
+
 else:
+    num_rounds = len(st.session_state.round_schedule)
+
     if st.button("🔁 Restart Game"):
         st.session_state.round_schedule = []
         st.session_state.round_number = 1
         st.session_state.checkpoint = 0
         st.session_state.has_rolled = False
+        st.session_state.num_rounds = num_rounds
+        st.session_state.checkpoint_rounds = st.session_state.checkpoint_rounds
+        st.session_state.inventory = []
         st.rerun()
 
     # Title of page
@@ -185,7 +203,6 @@ else:
         "Let's get started!"
     )
 
-    num_rounds = len(st.session_state.round_schedule)
     # Player entry
     with st.expander("🎮 Add Players"):
         max_players = 6
@@ -215,9 +232,10 @@ else:
             description = round_info.get("description", "No description")
             pool = round_info.get("pool", [])
 
-            st.subheader(f"🔄 Round {st.session_state.round_number}")
-            st.caption(f"📜 Rule: {description}")
+            st.header(f"⚔️ Round {st.session_state.round_number}")
+            st.subheader(f"📜 Rule: {description}")
 
+            #st.session_state.checkpoint_rounds = [5,10,15,20] #remove (just a hack)
             if st.session_state.round_number in st.session_state.checkpoint_rounds:
                 st.markdown("📍 **Checkpoint Round!** Win here to save progress.")
 
@@ -260,14 +278,39 @@ else:
 
     if st.session_state.has_rolled:
         col1, col2 = st.columns(2)
-        if col1.button("✅ Win (Next Round)"):
+        if col1.button("🏆 Win (Next Round)"):
             if st.session_state.round_number in st.session_state.checkpoint_rounds:
                 st.session_state.checkpoint = st.session_state.round_number
             st.session_state.round_number += 1
             st.session_state.has_rolled = False
+
+            # LOOT DROP (Animated)
+            got_loot = random.uniform(0, 1) < 0.1  # 10% chance to get loot
+            if got_loot:
+                st.markdown("🎁 **Loot Incoming!**")
+                time.sleep(2)
+                loot_placeholder = st.empty()
+
+                # Animate spin
+                for t in range(15):
+                    delay = 0.03 + (t / 15) * 0.2
+                    loot_spin = random.choice(loot_options)
+                    loot_placeholder.markdown(f"### 🎲 {loot_spin}")
+                    time.sleep(delay)
+
+                # Final loot
+                new_loot = random.choice(loot_options)
+                loot_placeholder.markdown(f"## 🎉 **You got: {new_loot}!**")
+                time.sleep(2)
+
+                # Add to inventory
+                st.session_state.inventory.append(new_loot)
+            else:
+                st.info("😞 No loot this time.")
+                time.sleep(2)
             st.rerun()
 
-        if col2.button("❌ Loss (Back to Checkpoint)"):
+        if col2.button("💀 Loss (Back to Checkpoint)"):
             st.session_state.round_number = (
                 st.session_state.checkpoint + 1 if st.session_state.checkpoint > 0 else 1
             )
@@ -275,4 +318,12 @@ else:
             st.rerun()
 
     st.markdown("---")
+    st.markdown("### 💰 Inventory")
+    if st.session_state.inventory:
+        st.markdown("You are carrying:")
+        for i, item in enumerate(st.session_state.inventory):
+            st.markdown(f"- {item}")
+    else:
+        st.markdown("_Inventory is empty_")
+
 

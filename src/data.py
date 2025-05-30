@@ -76,3 +76,60 @@ round_pools = {
         ]
     }
 }
+
+round_pools[12] = {
+    "description": "Worst win rates (this month)",
+    "pool": ["Skarner", "Nidalee", "Rengar", "Kalista", "K'Sante", "Azir", "Gragas", "Ezreal", "Kled", "Corki"]
+}
+round_pools[13] = {
+    "description": "Saw it once in the past 5 years",
+    "pool": ["Taric", "Kled", "Kassadin", "Nilah", "Kennen", "Fiora", "Bel'Veth", "Zilean", "Qiyana", "Udyr"]
+}
+round_pools[14] = {
+    "description": "Abs out",
+    "pool": ["Akshan", "Aatrox", "Brand", "Dr.Mundo", "Gragas", "Jax", "Kayn", "Lee Sin", "Pantheon", "Renekton",
+             "Ryze", "Sett", "Sylas", "Trundle", "Tryndamere", "Varus", "Udyr", "Viego", "Viktor", "Volibear",
+             "Warwick", "Yasuo", "Yone"]
+}
+round_pools[15] = {
+    "description": "Furries",
+    "pool": ["Ahri", "Aurora", "Cassiopeia", "Elise", "Lillia", "Nami", "Neeko"]
+}
+round_pools[16] = {
+    "description": "Ambre would pet in the wild",
+    "pool": ["Amumu", "Fizz", "Gnar", "Heimerdinger", "Ivern", "Kennen", "Kindred", "Nunu", "Rumble",
+             "Smolder", "Teemo", "Yuumi"]
+}
+round_pools[17] = {
+    "description": "Ambre WOULD NOT pet in the wild",
+    "pool": ["Alistar", "Cho'Gath", "Kha'Zix", "Kindred", "Kled", "Kog'Maw", "Malphite", "Maokai", "Naafiri",
+             "Rammus", "Rek'Sai", "Renekton", "Rengar", "Skarner", "Tahm Kench", "Twitch", "Volibear",
+             "Warwick", "Ziggs"]
+}
+round_pools[18] = {
+    "description": "Ginger reps",
+    "pool": ["Zyra", "Zoe", "Trundle", "Olaf", "Miss Fortune", "Gragas", "Gnar", "Aurora"]
+}
+round_pools[19] = {
+    "description": "Questionable Morals",
+    "pool": ["Bel'Veth", "Briar", "Cassiopeia", "Cho'Gath", "Dr.Mundo", "Elise", "Evelynn", "Fiddlesticks",
+             "Jhin", "Karthus", "Kha'zix", "Lissandra", "Mordekaiser", "Nocturne", "Rek'Sai", "Singed", "Thresh",
+             "Renata", "Twitch", "Varus", "Vel'Koz", "Jinx", "Ziggs", "Zyra", "Ambessa"]
+}
+round_pools[20] = {
+    "description": "Heroes / Celebrated",
+    "pool": ["Ashe", "Azir", "Braum", "Caitlyn", "Darius", "Galio", "Garren", "Heimerdinger", "Irelia",
+             "Janna", "Jarvan IV", "Jayce", "K'Sante", "Kayle", "Kled", "Leona", "Lucian", "Lux", "Nasus",
+             "Olaf", "Pantheon", "Poppy", "Quinn", "Ryze", "Sejuani", "Taric", "Tryndamere", "VI", "Wukong",
+             "Master Yi", "Xin Zhao", "Ambessa"]
+}
+round_pools[21] = {
+    "description": "The Fallen",
+    "pool": ["Aatrox", "Brand", "Maokai", "Morgana", "Renekton", "Riven", "Shaco", "Sion", "Skarner", "Thresh",
+             "Urgot", "Viego", "Viktor", "Xerath"]
+}
+round_pools[22] = {
+    "description": "Out for vengeance",
+    "pool": ["Alistar", "Aurelion Sol", "Azir", "Brand", "Kalista", "Kassadin", "Lucian", "Maokai", "Nautilus",
+             "Pyke", "Rell", "Renekton", "Sylas", "Syndra", "Urgot", "Varus", "Vayne", "Viego"]
+}

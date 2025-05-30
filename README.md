@@ -3,11 +3,21 @@
 - Add ARAM support
 - Clean up UI
 - More Riki rules
-- Victory screen
+- Victory screen and win / loss animations
+- Fix checkpoint warning
+- Loot system
+- Class system
+- Bonus rounds
+- Make rule text bigger on game page
+
+## Version 0.1.3
+
+- Fixed checkpoints not storing bug
+- Fixed needing to click twice for round numbers and checkpoints
 
 ## Version 0.1.2
 
-### Chnages
+### Changes
 
 - Added roll animation and sfx
 - More bugfixes
