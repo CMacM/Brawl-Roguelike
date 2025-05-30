@@ -9,6 +9,13 @@
 - Class system
 - Bonus rounds
 - Make rule text bigger on game page
+- Add more comments to code
+
+## Version 0.2.0
+
+- Added loot items and loot drop rate slider
+- Major refactoring of code structure
+- Various bugfixes
 
 ## Version 0.1.3
 
