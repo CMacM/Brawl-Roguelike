@@ -39,7 +39,6 @@ def handle_item_use(item, index):
     elif item == "round_skip":
         st.session_state.round_number += 1
         st.success("⏩ Round skipped!")
-        st.rerun()  # Refresh to update round number
     elif item == "champ_pick":
         st.session_state.force_champ_pick = True
         st.success("🎯 Players will pick their champions!")
