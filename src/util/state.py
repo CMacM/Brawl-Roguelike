@@ -12,7 +12,7 @@ def init_session_state():
         "round_selections": {},
         "inventory": [],
         "num_rounds": 5,
-        "loot_chance": 0.5,
+        "loot_slider": 0.5,
         "pre_selected_rounds": [],
         "force_champ_pick": False,
         "force_team_pick": False,

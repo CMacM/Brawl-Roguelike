@@ -58,7 +58,6 @@ num_rounds = st.number_input(
     "How many rounds?", 
     min_value=1,
     max_value=max_rounds,
-    value=5,
     step=1,
     key="num_rounds"
 )
@@ -107,7 +106,6 @@ with cols[1]:
         "🎲 Loot Chance",
         min_value=0.0,
         max_value=1.0,
-        value=0.5,
         step=0.01,
         key="loot_slider",
         on_change=lambda: setattr(st.session_state, "loot_chance", st.session_state.loot_slider)
@@ -131,9 +129,9 @@ with cols[1]:
     if st.button("🗑️ Clear Configuration"):
         for key in st.session_state.keys():
             del st.session_state[key]
-        st.session_state.num_rounds = 5
-        st.session_state.checkpoint_rounds = []
-        st.session_state.loot_slider = 0.5
+        # st.session_state.num_rounds = 5
+        # st.session_state.checkpoint_rounds = []
+        # st.session_state.loot_slider = 0.5
         st.rerun()
     
     if st.button("📖 View Custom Rules"):

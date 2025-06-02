@@ -19,7 +19,7 @@ def animate_champion_roll(players, pool, champion_dict):
         for idx in range(len(players)):
             champ = random.choice(pool)
             champ_id = champion_dict.get(champ, champ)
-            player_placeholders[idx].image(f"assets/champ_icons/{champ_id}.png", width=100)
+            player_placeholders[idx].image(f"assets/icons/{champ_id}.png", width=100)
         time.sleep(delay)
     return player_placeholders
 
@@ -31,7 +31,7 @@ def animate_loot_roll(loot_dict):
     loot_placeholder = st.empty()
     for t in range(15):
         roll = random.choice(list(loot_dict.keys())) # Randomly select a loot item to display
-        loot_placeholder.markdown(f"### 🎲 {loot_dict[roll]["display_name"]}")
+        loot_placeholder.image(f"{loot_dict[roll]['icon']}", width=100)
         time.sleep(0.03 + (t / 15) * 0.2)
 
     # Finalize the loot roll
@@ -43,7 +43,8 @@ def animate_loot_roll(loot_dict):
     )[0]
     
     final_loot = loot_dict[final_roll] # Get the final loot item
-    loot_placeholder.markdown(f"## 🎉 **You got: {final_loot["display_name"]}!**")
+    loot_placeholder.image(f"{final_loot['icon']}", width=100)
+    st.markdown(f"🎉 You got: **{final_loot['display_name']}**!")
     time.sleep(1.5)
 
     return final_loot

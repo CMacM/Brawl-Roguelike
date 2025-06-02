@@ -1,35 +1,30 @@
 import streamlit as st
 import random
+from src.data import loot_dict
 
 def show_inventory(override=False):
-    st.subheader("🎒 Inventory")
+    st.subheader("🧰 Inventory")
     inventory = st.session_state.get("inventory", [])
 
     # Give all items if override is True
     # for testing purposes
     if override:
-        inventory = [
-            "reroll", "round_skip", "champ_pick", "team_pick",
-            "round_swapper", "gambletronic", "setbackatron"
-        ]
-        st.session_state.inventory = inventory
+        inventory = loot_dict.values()
 
     if not inventory:
         st.info("No loot items yet!")
         return
 
     for idx, item in enumerate(inventory):
-        display_name = item["display_name"]
-        col1, col2 = st.columns([3, 1])
+        col1, col2, col3 = st.columns([1, 3, 1])
         with col1:
-            st.markdown(f"**{display_name}**")
+            st.image(item["icon"], width=100)
         with col2:
+            st.markdown(f"<span style=\"color:orange\">**{item["display_name"]}**</span>: {item["description"]}", unsafe_allow_html=True)
+            st.markdown(f"*\"{item["flavour"]}\"*")
+        with col3:
             if st.button(f"Use", key=f"use_item_{idx}"):
                 handle_item_use(item, idx)
-
-def loot_display_name(item_key):
-    from src.data import loot_dict
-    return loot_dict.get(item_key, {}).get("display_name", item_key)
 
 def handle_item_use(item, index):
     item = item["name"] if isinstance(item, dict) else item

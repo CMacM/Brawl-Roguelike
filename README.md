@@ -11,6 +11,11 @@
 - Make rule text bigger on game page
 - Add more comments to code
 
+## Version 0.2.1
+
+- Overhauled loot UI and item naming, added flavour text and loot icons
+- Bugfixes
+
 ## Version 0.2.0
 
 - Added loot items and loot drop rate slider

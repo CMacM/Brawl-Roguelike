@@ -22,7 +22,7 @@ with st.expander("🧙 Select Champions for this Pool"):
         champ_id = champion_dict[champ]
         col = cols[i % len(cols)]
         with col:
-            st.image(f"assets/champ_icons/{champ_id}.png", width=60)
+            st.image(f"assets/icons/{champ_id}.png", width=60)
             if st.checkbox("", key=f"champ_{champ}"):
                 selected.add(champ)
 

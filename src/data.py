@@ -137,44 +137,58 @@ round_pools[22] = {
 
 loot_dict = {
     "reroll": {
-        "description": "Re-roll your champions for this round.",
-        "display_name": "🔁 Re-roll",
+        "flavour": "The great gambler Makael's die won him many a game, until it cost his head.",
+        "description": "Re-roll your champion selection for this round.",
+        "display_name": "Makael's Magic Die",
+        "icon": "assets/loot_icons/makaels_magic_die.png",
         "name": "reroll",
         "drop_rate" : 0.4  # 20% chance to drop
     },
     "round_skip": {
-        "description": "Skip the current round and move to the next one.",
-        "display_name": "⏩ Round Skip",
+        "flavour": "Each step scorches the path forward, leaving no room for retreat.",
+        "description": "Skip the current round and proceed to the next one. May be used after rolling.",
+        "display_name": "Boots of the Burning God",
+        "icon": "assets/loot_icons/boots_of_the_burning_god.png",
         "name": "round_skip",
         "drop_rate" : 0.05  # 30% chance to drop
     },
     "champ_pick": {
-        "description": "Each player picks a champion from the pool for this round.",
-        "display_name": "🎯 Champ Pick",
+        "flavour": "High Summoner Samzur's codex was stolen, leaving the secret of summoning champions lost to time.",
+        "description": "Each player can pick a champion from the pool. Must be used before rolling.",
+        "display_name": "Samzur's Summoning Codex",
+        "icon": "assets/loot_icons/samzurs_summoning_codex.png",
         "name": "champ_pick",
         "drop_rate" : 0.05  # 30% chance to drop
     },
     "team_pick": {
-        "description": "Players vote on a champion to be played. This champions is then randomly assigned to a player.",
-        "display_name": "👥 Team Pick",
+        "flavour": "To sip from it is to share the burden of choice, but only one will reap the rewards.",
+        "description": "Allows players to pick a champion for their team from the pool. Must be used before rolling.",
+        "display_name": "Chalice of Unity",
+        "icon": "assets/loot_icons/chalice_of_unity.png",
         "name": "team_pick",
         "drop_rate" : 0.4  # 25% chance to drop
     },
     "round_swapper": {
-        "description": "Swap the current round with another round in the schedule.",
-        "display_name": "🔄 Round Swapper",
+        "flavour": "A most devious trickster, Rikstain used this wand to distort reality in his favor.",
+        "description": "Swap the current round with any previous round. Can only be used once per game.",
+        "display_name": "Rikstain's Wand of Recursion",
+        "icon": "assets/loot_icons/rikstains_wand_of_recursion.png",
         "name": "round_swapper",
         "drop_rate" : 0.15  # 15% chance to drop
     },
     "gambletronic": {
-        "description": "Activates a random bonus round effect, which can be beneficial or detrimental.",
-        "display_name": "🎰 Gambletronic",
+        "flavour": "Once a staple in Zaunite Casinos, this device fell out use with the advent of Chemtech.",
+        "description": "Activates a random bonus effect for the current round. Whether it helps or hinders is up to fate.",
+        "display_name": "Gambletronic Mk.IV",
+        "icon": "assets/loot_icons/gambletronic_mkiv.png",
         "name": "gambletronic",
         "drop_rate" : 0  # 20% chance to drop
     },
     "setbackatron": {
-        "description": "A loss this round only sets you back to the previous round, not the checkpoint.",
-        "display_name": "⏳ Setbackatron",
+        "flavour": "Oddly familiar, this Hextech device seems to have come from another timeline.",
+        "description": "A loss this round only sets you back one round",
+        "display_name": "Chrono-tether Core",
+        "icon": "assets/loot_icons/chrono-tether_core.png",
         "name": "setbackatron",
         "drop_rate" : 0.05  # 10% chance to drop
     }
