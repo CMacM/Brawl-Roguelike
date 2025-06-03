@@ -283,7 +283,7 @@ round_modifiers = {
     "alchemy": {
         "description": "Convert 1 item into a Chrono-tether Core this round.",
         "name": "Alchemy",
-        "flavour": "<span style=color:green>EnableTransumation == **True**</span>: *Overwriting item properties.*",
+        "flavour": "<span style=color:green>EnableTransumation == **True**</span> <br> *Overwriting item properties.*",
         "type": "buff",
         "callback": lambda: setattr(st.session_state, "alchemy_mode", True)
     }
