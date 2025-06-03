@@ -206,5 +206,5 @@ with st.expander("🔧 Configure Rounds", expanded=False):
 
 with st.expander("📜 View Modifiers", expanded=True):    
     for key, value in round_modifiers.items():
-        st.markdown(f"{value["flavour"]}: ✨ **{value["description"]}**", unsafe_allow_html=True)
+        st.markdown(f"{value["flavour"]} ✨ **{value["description"]}**", unsafe_allow_html=True)
         #st.markdown("---")
