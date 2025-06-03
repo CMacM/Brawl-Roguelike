@@ -128,7 +128,7 @@ with cols1:
         st.session_state.randomized = False
 
         st.switch_page("pages/2_Game.py")
-    st.markdown("(*Play with the same rules every round.*)")
+    st.markdown("(*Play with fixed rules for each round.*)")
 
 with cols2:
     if st.button("🎰 Start Randomized Game"):
