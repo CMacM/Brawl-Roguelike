@@ -8,10 +8,11 @@ def animate_champion_roll(players, pool, champion_dict):
     for idx, player in enumerate(players):
         grouped[idx % 3].append((idx, player))
     player_placeholders = [None] * len(players)
+    name_placeholders = [None] * len(players)
     for col_idx, group in enumerate(grouped):
         with columns[col_idx]:
             for idx, player in group:
-                st.markdown(f"**{player}**", unsafe_allow_html=True)
+                name_placeholders[idx] = st.markdown(f"**{player}**")
                 player_placeholders[idx] = st.empty()
 
     for t in range(15):
@@ -21,7 +22,11 @@ def animate_champion_roll(players, pool, champion_dict):
             champ_id = champion_dict.get(champ, champ)
             player_placeholders[idx].image(f"assets/icons/{champ_id}.png", width=100)
         time.sleep(delay)
-    return player_placeholders
+
+    for idx in range(len(players)):
+        name_placeholders[idx].empty()  # Clear the name placeholder
+        player_placeholders[idx].empty()  # Clear the champion image placeholder
+
 
 def animate_loot_roll(loot_dict):
     st.markdown("🎁 **Loot Incoming!**")
@@ -44,7 +49,6 @@ def animate_loot_roll(loot_dict):
     
     final_loot = loot_dict[final_roll] # Get the final loot item
     loot_placeholder.image(f"{final_loot['icon']}", width=100)
-    st.markdown(f"🎉 You got: **{final_loot['display_name']}**!")
     time.sleep(1.5)
 
     return final_loot

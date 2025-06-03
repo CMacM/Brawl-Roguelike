@@ -3,33 +3,45 @@ import random
 from src.data import loot_dict
 
 def show_inventory(override=False):
+
+    #for testing purposes
+    if override:
+        st.session_state.inventory = list(loot_dict.keys())
+
     st.subheader("🧰 Inventory")
     inventory = st.session_state.get("inventory", [])
-
-    # Give all items if override is True
-    # for testing purposes
-    if override:
-        inventory = loot_dict.values()
 
     if not inventory:
         st.info("No loot items yet!")
         return
 
-    for idx, item in enumerate(inventory):
-        col1, col2, col3 = st.columns([1, 3, 1])
-        with col1:
-            st.image(item["icon"], width=100)
-        with col2:
-            st.markdown(f"<span style=\"color:orange\">**{item["display_name"]}**</span>: {item["description"]}", unsafe_allow_html=True)
-            st.markdown(f"*\"{item["flavour"]}\"*")
-        with col3:
-            if st.button(f"Use", key=f"use_item_{idx}"):
-                handle_item_use(item, idx)
+    if not st.session_state.disable_items:
+        for idx, item in enumerate(inventory):
+
+            col1, col2, col3 = st.columns([1, 4, 1])
+            with col1:
+                st.image(item["icon"], width=100)
+
+            with col2:
+                st.markdown(f"<span style=\"color:orange\">**{item["display_name"]}**</span>: {item["description"]}", unsafe_allow_html=True)
+                st.markdown(f"*\"{item["flavour"]}\"*")
+
+            with col3:
+                if item["policy"] == "pre_roll":
+                    button = st.button(f"Use", key=f"use_item_{idx}", disabled=st.session_state.has_rolled)
+                elif item["policy"] == "post_roll":
+                    button = st.button(f"Use", key=f"use_item_{idx}", disabled=not st.session_state.has_rolled)
+                else:
+                    button = st.button(f"Use", key=f"use_item_{idx}")
+
+                if button:
+                    handle_item_use(item, idx)
 
 def handle_item_use(item, index):
     item = item["name"] if isinstance(item, dict) else item
     if item == "reroll":
         #st.session_state.has_rolled = False
+        st.session_state.has_rolled = False
         st.success("🔁 Champions will be re-rolled!")
     elif item == "round_skip":
         st.session_state.round_number += 1

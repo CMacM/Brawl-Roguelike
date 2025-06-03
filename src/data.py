@@ -1,3 +1,5 @@
+import streamlit as st
+
 # Define custom pools for each round
 round_pools = {
     1: {
@@ -31,10 +33,6 @@ round_pools = {
             "Nilah", "Kayn", "Qiyana", "Zed", "Warwick", "Kindred"
         ]
     },
-    5: {
-        "description": "Item Mirror (build what enemy builds) 🪞",
-        "pool": []  # Custom pick – handled differently in code
-    },
     6: {
         "description": "Don't get 1-shot (ADCs) 🎯",
         "pool": [
@@ -63,10 +61,6 @@ round_pools = {
             "Karma", "Katarina", "Akali", "Leblanc", "Lux", "Zyra", "Morgana", "Sivir", "Miss Fortune", "Nidalee", 
             "Leona", "Sona", "Syndra", "Vi", "Renata"
         ]
-    },
-    10: {
-        "description": "Short Sighted (fully zoomed in) 🔎",
-        "pool": []  # Custom pick – handled differently in code
     },
     11: {
         "description": "Ambre's Favourites 👧🏽",
@@ -142,14 +136,16 @@ loot_dict = {
         "display_name": "Makael's Magic Die",
         "icon": "assets/loot_icons/makaels_magic_die.png",
         "name": "reroll",
+        "policy": "post_roll",
         "drop_rate" : 0.4  # 20% chance to drop
     },
     "round_skip": {
-        "flavour": "Each step scorches the path forward, leaving no room for retreat.",
+        "flavour": "With her flaming stride, the Burning God forges paths where others see walls.",
         "description": "Skip the current round and proceed to the next one. May be used after rolling.",
         "display_name": "Boots of the Burning God",
         "icon": "assets/loot_icons/boots_of_the_burning_god.png",
         "name": "round_skip",
+        "policy": "anytime",
         "drop_rate" : 0.05  # 30% chance to drop
     },
     "champ_pick": {
@@ -158,6 +154,7 @@ loot_dict = {
         "display_name": "Samzur's Summoning Codex",
         "icon": "assets/loot_icons/samzurs_summoning_codex.png",
         "name": "champ_pick",
+        "policy": "pre_roll",
         "drop_rate" : 0.05  # 30% chance to drop
     },
     "team_pick": {
@@ -166,22 +163,25 @@ loot_dict = {
         "display_name": "Chalice of Unity",
         "icon": "assets/loot_icons/chalice_of_unity.png",
         "name": "team_pick",
+        "policy": "pre_roll",
         "drop_rate" : 0.4  # 25% chance to drop
     },
     "round_swapper": {
         "flavour": "A most devious trickster, Rikstain used this wand to distort reality in his favor.",
-        "description": "Swap the current round with any previous round. Can only be used once per game.",
+        "description": "Swap the current round with any round in the schedule. Must be used before rolling.",
         "display_name": "Rikstain's Wand of Recursion",
         "icon": "assets/loot_icons/rikstains_wand_of_recursion.png",
         "name": "round_swapper",
+        "policy": "pre_roll",
         "drop_rate" : 0.15  # 15% chance to drop
     },
     "gambletronic": {
-        "flavour": "Once a staple in Zaunite Casinos, this device fell out use with the advent of Chemtech.",
+        "flavour": "Once a staple in Zaunite Casinos, this device fell out of use with the advent of Chemtech.",
         "description": "Activates a random bonus effect for the current round. Whether it helps or hinders is up to fate.",
         "display_name": "Gambletronic Mk.IV",
         "icon": "assets/loot_icons/gambletronic_mkiv.png",
         "name": "gambletronic",
+        "policy": "anytime",
         "drop_rate" : 0  # 20% chance to drop
     },
     "setbackatron": {
@@ -190,7 +190,102 @@ loot_dict = {
         "display_name": "Chrono-tether Core",
         "icon": "assets/loot_icons/chrono-tether_core.png",
         "name": "setbackatron",
+        "policy": "anytime",
         "drop_rate" : 0.05  # 10% chance to drop
+    }
+}
+
+round_modifiers = {
+    "item_mirror": {
+        "description": "Build what the enemy builds this round.",
+        "name": "Item Mirror",
+        "flavour": "<span style=color:red>Error: ShopNotOpen</span> <br> *Attempting to mirror enemy items.*",
+        "type": "debuff",
+        "callback": None
+    },
+    "myopia": {
+        "description": "Fully zoomed in this round.",
+        "name": "Myopia",
+        "flavour": "<span style=color:red>Error: FieldOfViewOverflow</span> <br> *Shrinking simulation bounds to prevent system crash.*",
+        "type": "debuff",
+        "callback": None
+    },
+    "poverty": {
+        "description": "A random player may only spend 10000 gold this round.",
+        "name": "Poverty",
+        "flavour": "<span style=color:red>Error: EmptyWallet</span> <br> *Proceeding with bare hands.*",
+        "type": "debuff",
+        "callback": None
+    },
+    "itemless": {
+        "description": "No items this round.",
+        "name": "Itemless",
+        "flavour": "<span style=color:red>Error: InventoryNotFound</span> <br> *Unable to retrieve item data.*",
+        "type": "debuff",
+        "callback": lambda: setattr(st.session_state, "disable_items", True)
+    },
+    "nemesis": {
+        "description": "Each player may only kill 1 champion this round.",
+        "name": "Nemesis",
+        "flavour": "<span style=color:red>Error: EnemyTeamNotFound</span> <br> *Limiting players to single-target engagements.*",
+        "type": "debuff",
+        "callback": None
+    },
+    "flashless": {
+        "description": "Cannot take Flash this round.",
+        "name": "Flashless",
+        "flavour": "<span style=color:red>Error: SummonerSpellNotFound</span> <br> *Flash spell not available.*",
+        "type": "debuff",
+        "callback": None
+    },
+    "weakult": {
+        "description": "Can only put 1 point into your ultimate this round.",
+        "name": "Weakult",
+        "flavour": "<span style=color:red>Error: UltPowerOverflow</span> <br> *Limiting ultimate power to 1 point.*",
+        "type": "debuff",
+        "callback": None
+    },
+    "damage_dash": {
+        "description": "Exceed an average of 25,000 damage per player this round to advance even if you lose",
+        "name": "Damage Dash",
+        "flavour": "<span style=color:green>DamageThreshold == **True**</span> <br> *Setting death counter to Null.*",
+        "type": "buff",
+        "callback": None
+    },
+    "godlike": {
+        "description": "Nomitate a player. If this player gets 20 kills this round, advance even if you lose",
+        "name": "Godlike",
+        "flavour": "<span style=color:green>GodlikePlayer == **True**</span> <br> *Reducing player count to 1.*",
+        "type": "buff",
+        "callback": None
+    },
+    "assistance": {
+        "description": "Exceed an average of 15 assists per player this round to advance even if you lose",
+        "name": "Assistance",
+        "flavour": "<span style=color:green>AssitanceDirective == **True**</span> <br> *Helping hand extended.*",
+        "type": "buff",
+        "callback": None
+    },
+    "minion_massacre": {
+        "description": "Exceed an average of 200 CS per player this round to advance even if you lose",
+        "name": "Minion Massacre",
+        "flavour": "<span style=color:green>MinionMassacre == **True**</span> <br> *Engaging farming simulator.*",
+        "type": "buff",
+        "callback": None
+    },
+    "psychic": {
+        "description": "Guess a champion that will be rolled to advance this round.",
+        "name": "Psychic",
+        "flavour": "<span style=color:green>RollCall == **True**</span> <br> *Setting seed to 0.*",
+        "type": "buff",
+        "callback": lambda: setattr(st.session_state, "psychic_mode", True)
+    },
+    "alchemy": {
+        "description": "Convert 1 item into a Chrono-tether Core this round.",
+        "name": "Alchemy",
+        "flavour": "<span style=color:green>EnableTransumation == **True**</span>: *Overwriting item properties.*",
+        "type": "buff",
+        "callback": lambda: setattr(st.session_state, "alchemy_mode", True)
     }
 }
 
@@ -201,3 +296,7 @@ for round_num, details in round_pools.items():
 print("\nAvailable Loot Options:")
 for loot_key, loot_info in loot_dict.items():
     print(f"{loot_info['display_name']}: {loot_info['description']}")
+
+print("\nAvailable Round Modifiers:")
+for modifier_key, modifier_info in round_modifiers.items():
+    print(f"{modifier_info['name']}: {modifier_info['description']} (Type: {modifier_info['type']})")

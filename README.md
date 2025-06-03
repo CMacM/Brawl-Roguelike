@@ -4,12 +4,23 @@
 - Clean up UI
 - More Riki rules
 - Victory screen and win / loss animations
-- Fix checkpoint warning
-- Loot system
 - Class system
 - Bonus rounds
 - Make rule text bigger on game page
 - Add more comments to code
+- Make bonus round frequency adjustable
+
+## Version 0.3.0
+
+- Added bonus round effects
+- Added ability to view champion pool in game scree
+- Roll button is now disabled after clicking until next round
+
+## Version 0.2.2
+
+- Modify home screen UI
+- Add option to play a fully randomised game with rules changing each round
+- Added logo
 
 ## Version 0.2.1
 
