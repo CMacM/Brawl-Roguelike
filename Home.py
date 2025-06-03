@@ -6,7 +6,7 @@ import time
 
 from src.assets import fetch_champion_assets
 from src.util.state import init_session_state
-from src.data import round_pools
+from src.data import round_pools, round_modifiers
 
 st.set_page_config(page_title="Brawlatron 3000", layout="centered")
 
@@ -203,3 +203,8 @@ with st.expander("🔧 Configure Rounds", expanded=False):
             # Store in session state
             st.session_state.round_selections[i] = rule
             manual_config.append(rule)
+
+with st.expander("📜 View Modifiers", expanded=True):    
+    for key, value in round_modifiers.items():
+        st.markdown(f"{value["flavour"]}: ✨ **{value["description"]}**", unsafe_allow_html=True)
+        #st.markdown("---")
