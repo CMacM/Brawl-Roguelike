@@ -262,7 +262,7 @@ round_modifiers = {
     "assistance": {
         "description": "Exceed an average of 15 assists per player this round to advance even if you lose",
         "name": "Assistance",
-        "flavour": "<span style=color:green>AssitanceDirective == **True**</span> <br> *Helping hand extended.*",
+        "flavour": "<span style=color:green>AssistanceDirective == **True**</span> <br> *Helping hand extended.*",
         "type": "buff",
         "callback": None
     },
