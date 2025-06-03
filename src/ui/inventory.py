@@ -1,6 +1,6 @@
 import streamlit as st
 import random
-from src.data import loot_dict
+from src.data import loot_dict, round_modifiers
 
 def show_inventory(override=False):
 
@@ -56,14 +56,8 @@ def handle_item_use(item, index):
         st.session_state.activate_round_swap = True
         st.success("🔄 Swap a round in the schedule!")
     elif item == "gambletronic":
-        gamble = random.choice(["boost", "penalty"])
-        if gamble == "boost":
-            st.session_state.round_number += 2
-            st.balloons()
-            st.success("🎰 Gambletronic boost! Skipped two rounds!")
-        else:
-            st.session_state.round_number = max(1, st.session_state.round_number - 2)
-            st.error("💥 Gambletronic penalty! Back two rounds.")
+        st.session_state.active_modifier = random.choice(list(round_modifiers.keys()))
+        st.success(f"🎰 Gambletronic activated! Modifier: {st.session_state.active_modifier}")
     elif item == "setbackatron":
         st.session_state.setback_override = True
         st.info("⏳ If you lose, you'll only go back one round.")

@@ -137,7 +137,7 @@ loot_dict = {
         "icon": "assets/loot_icons/makaels_magic_die.png",
         "name": "reroll",
         "policy": "post_roll",
-        "drop_rate" : 0.4  # 20% chance to drop
+        "drop_rate" : 0.3  # 20% chance to drop
     },
     "round_skip": {
         "flavour": "With her flaming stride, the Burning God forges paths where others see walls.",
@@ -164,7 +164,7 @@ loot_dict = {
         "icon": "assets/loot_icons/chalice_of_unity.png",
         "name": "team_pick",
         "policy": "pre_roll",
-        "drop_rate" : 0.4  # 25% chance to drop
+        "drop_rate" : 0.3  # 25% chance to drop
     },
     "round_swapper": {
         "flavour": "A most devious trickster, Rikstain used this wand to distort reality in his favor.",
@@ -182,7 +182,7 @@ loot_dict = {
         "icon": "assets/loot_icons/gambletronic_mkiv.png",
         "name": "gambletronic",
         "policy": "anytime",
-        "drop_rate" : 0  # 20% chance to drop
+        "drop_rate" : 0.2  # 20% chance to drop
     },
     "setbackatron": {
         "flavour": "Oddly familiar, this Hextech device seems to have come from another timeline.",

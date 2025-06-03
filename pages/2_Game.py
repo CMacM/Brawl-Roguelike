@@ -291,6 +291,8 @@ if st.session_state.has_rolled:
         if activate_modifier:
             modifier = random.choice(list(round_modifiers.keys()))
             st.session_state.active_modifier = modifier
+        elif "active_modifier" in st.session_state:
+            del st.session_state.active_modifier
 
         st.rerun()
 
@@ -323,6 +325,8 @@ if st.session_state.has_rolled:
         if activate_modifier:
             modifier = random.choice(list(round_modifiers.keys()))
             st.session_state.active_modifier = modifier
+        elif "active_modifier" in st.session_state:
+            del st.session_state.active_modifier  # Clear any active modifier
 
         st.rerun()
 

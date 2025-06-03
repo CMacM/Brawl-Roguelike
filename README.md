@@ -15,6 +15,7 @@
 - Added bonus round effects
 - Added ability to view champion pool in game scree
 - Roll button is now disabled after clicking until next round
+- Added Gambletronic Mk. IV item
 
 ## Version 0.2.2
 
